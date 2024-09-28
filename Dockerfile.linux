@@ -1,4 +1,4 @@
-ARG img_version
+ARG img_version=latest
 FROM godot-fedora:${img_version}
 
 ENV GODOT_SDK_LINUX_X86_64=/root/x86_64-godot-linux-gnu_sdk-buildroot
@@ -32,4 +32,4 @@ RUN dnf install -y wayland-devel && \
     cd arm-godot-linux-gnueabihf_sdk-buildroot && \
     ./relocate-sdk.sh
 
-CMD /bin/bash
+CMD ["/bin/bash"]

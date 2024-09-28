@@ -1,4 +1,4 @@
-ARG img_version
+ARG img_version=latest
 FROM godot-fedora:${img_version}
 
 ENV EMSCRIPTEN_VERSION=3.1.64
@@ -7,4 +7,4 @@ RUN git clone --branch ${EMSCRIPTEN_VERSION} --progress https://github.com/emscr
     emsdk/emsdk install ${EMSCRIPTEN_VERSION} && \
     emsdk/emsdk activate ${EMSCRIPTEN_VERSION}
 
-CMD /bin/bash
+CMD ["/bin/bash"]

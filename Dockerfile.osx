@@ -1,4 +1,4 @@
-ARG img_version
+ARG img_version=latest
 FROM godot-fedora:${img_version}
 
 ENV OSX_SDK=14.5
@@ -25,4 +25,4 @@ RUN dnf -y install --setopt=install_weak_deps=False \
 ENV OSXCROSS_ROOT=/root/osxcross
 ENV PATH="/root/osxcross/target/bin:${PATH}"
 
-CMD /bin/bash
+CMD ["/bin/bash"]

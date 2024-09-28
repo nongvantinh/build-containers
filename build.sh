@@ -4,6 +4,9 @@ basedir=$(cd $(dirname "$0"); pwd)
 
 source $basedir/setup.sh
 
+artifact_basedir=$ARTIFACTS_ROOT_PATH
+
+
 if [ -z "$1" -o -z "$2" ]; then
   echo "Usage: $0 <godot branch> <base distro>"
   echo
@@ -22,7 +25,7 @@ fi
 godot_branch=$1
 base_distro=$2
 img_version=$godot_branch-$base_distro
-files_root="$basedir/files"
+files_root="$artifact_basedir/files"
 
 if [ ! -z "$PS1" ]; then
   # Confirm settings
@@ -40,23 +43,21 @@ fi
 
 mkdir -p logs
 
-"$podman" build -t godot-fedora:${img_version} -f Dockerfile.base . 2>&1 | tee logs/base.log
+docker build -t godot-fedora:${img_version} -f Dockerfile.base . 2>&1 | tee logs/base.log
 
-podman_build() {
-  # You can add --no-cache as an option to podman_build below to rebuild all containers from scratch.
-  "$podman" build \
+docker_build() {
+  docker build \
+    --no-cache \
     --build-arg img_version=${img_version} \
-    -v "${files_root}":/root/files:z \
     -t godot-"$1:${img_version}" \
     -f Dockerfile."$1" . \
     2>&1 | tee logs/"$1".log
 }
 
-podman_build linux
-podman_build windows
-
-podman_build web
-podman_build android
+docker_build linux
+docker_build windows
+docker_build web
+docker_build android
 
 XCODE_SDK=15.4
 OSX_SDK=14.5
@@ -70,15 +71,17 @@ if [ ! -e "${files_root}"/MacOSX${OSX_SDK}.sdk.tar.xz ] || [ ! -e "${files_root}
   fi
 
   echo "Building OSX and iOS SDK packages. This will take a while"
-  podman_build xcode
-  "$podman" run -it --rm \
-    -v "${files_root}":/root/files:z \
-    -e XCODE_SDKV="${XCODE_SDK}" \
-    -e OSX_SDKV="${OSX_SDK}" \
-    -e IOS_SDKV="${IOS_SDK}" \
+  docker_build xcode
+  docker run --rm \
+    -v ${files_root}:/root/files \
+    -e XCODE_SDKV=${XCODE_SDK} \
+    -e OSX_SDKV=${OSX_SDK} \
+    -e IOS_SDKV=${IOS_SDK} \
     godot-xcode:${img_version} \
     2>&1 | tee logs/xcode_packer.log
+
+  echo "SDK packages copied to '${files_root}'"
 fi
 
-podman_build osx
-podman_build ios
+docker_build osx
+docker_build ios

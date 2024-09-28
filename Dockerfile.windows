@@ -1,4 +1,4 @@
-ARG img_version
+ARG img_version=latest
 FROM godot-fedora:${img_version}
 
 RUN dnf -y install --setopt=install_weak_deps=False \
@@ -8,4 +8,4 @@ RUN dnf -y install --setopt=install_weak_deps=False \
     rm -f llvm-mingw-20240619-ucrt-ubuntu-20.04-x86_64.tar.xz && \
     mv -f llvm-mingw-20240619-ucrt-ubuntu-20.04-x86_64 /root/llvm-mingw
 
-CMD /bin/bash
+CMD ["/bin/bash"]

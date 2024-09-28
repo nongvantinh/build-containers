@@ -1,5 +1,8 @@
-ARG img_version
+ARG img_version=latest
 FROM godot-osx:${img_version}
+
+# Copy the necessary files into the image
+COPY files /root/files
 
 ENV IOS_SDK=17.5
 
@@ -36,4 +39,4 @@ ENV OSXCROSS_IOS=not_nothing
 ENV IOSCROSS_ROOT=/root/ioscross
 ENV PATH="/root/ioscross/arm64/bin:/root/ioscross/arm64_sim/bin:/root/ioscross/x86_64_sim/bin:${PATH}"
 
-CMD /bin/bash
+CMD ["/bin/bash"]

@@ -1,4 +1,4 @@
-ARG img_version
+ARG img_version=latest
 FROM godot-fedora:${img_version}
 
 ENV ANDROID_SDK_ROOT=/root/sdk
@@ -15,4 +15,4 @@ RUN dnf -y install --setopt=install_weak_deps=False \
     yes | cmdline-tools/bin/sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" --licenses && \
     cmdline-tools/bin/sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" "ndk;${ANDROID_NDK_VERSION}" 'cmdline-tools;latest' 'build-tools;34.0.0' 'platforms;android-34' 'cmake;3.22.1'
 
-CMD /bin/bash
+CMD ["/bin/bash"]

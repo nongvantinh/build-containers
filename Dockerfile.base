@@ -10,4 +10,4 @@ RUN dnf -y install --setopt=install_weak_deps=False \
       dotnet-sdk-8.0 && \
     pip install scons==4.8.0
 
-CMD /bin/bash
+CMD ["/bin/bash"]

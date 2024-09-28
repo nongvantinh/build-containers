@@ -1,5 +1,8 @@
-ARG img_version
+ARG img_version=latest
 FROM godot-fedora:${img_version}
+
+# Copy the necessary files into the image
+COPY files /root/files
 
 RUN dnf -y install --setopt=install_weak_deps=False \
       clang xar xar-devel xz-devel cpio && \
@@ -12,7 +15,7 @@ ENV XCODE_SDKV=
 ENV OSX_SDKV=
 ENV IOS_SDKV=
 
-CMD mkdir -p /root/xcode && \
+CMD ["/bin/bash", "-c", "mkdir -p /root/xcode && \
     cd /root/xcode && \
     xar -xf /root/files/Xcode_${XCODE_SDKV}.xip && \
     /root/pbzx/pbzx -n Content | cpio -i && \
@@ -32,4 +35,4 @@ CMD mkdir -p /root/xcode && \
     cp -r Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk /tmp/${IOS_SIMULATOR_SDK} && \
     cd /tmp && \
     tar -cJf /root/files/${IOS_SIMULATOR_SDK}.tar.xz ${IOS_SIMULATOR_SDK} && \
-    rm -rf ${IOS_SIMULATOR_SDK}
+    rm -rf ${IOS_SIMULATOR_SDK}"]
